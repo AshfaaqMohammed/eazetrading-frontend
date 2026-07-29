@@ -5,13 +5,31 @@ import StockChart from './StockChart';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Cross1Icon, DotIcon } from '@radix-ui/react-icons';
 import { MessageCircle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 
 const Home = () => {
 
     const [category, setCategory] = useState("all");
+    const [inputValue, setInputValue] = useState("");
+    const [isBotRelease, setBotRelease] = useState(false);
 
     const handleCategory = (value) => {
         setCategory(value);
+    }
+
+    const handleChange = (e) => {
+        setInputValue(e.target.value);
+    }
+
+    const handleKeypress = (event) => {
+        if (event.key == "Enter") {
+            console.log(inputValue);
+            setInputValue("");
+        }
+    }
+
+    const handleBotRelease = () => {
+        setBotRelease(!isBotRelease);
     }
 
     return (
@@ -65,10 +83,11 @@ const Home = () => {
             </div>
             <section className='absolute bottom-5 right-5 z-40 flex flex-col justify-end items-end gap-2'>
 
+                {isBotRelease && 
                 <div className='rounded-md w-[20rem] md:w-[25rem] lg:w-[25rem] h-[70vh] bg-slate-900'>
                     <div className="flex justify-between items-center border-b px-6 h-[12%]">
                         <p>Chat Bot</p>
-                        <Button variant='ghost' size="icon">
+                        <Button onClick={handleBotRelease}  variant='ghost' size="icon">
                             <Cross1Icon />
                         </Button>
                     </div>
@@ -77,12 +96,12 @@ const Home = () => {
                             <div className="justify-end self-end px-5 py-2 rounded-md bg-slate-700 w-auto">
                                 <p>Hi, Ahad,</p>
                                 <p>you can ask crypto related any questions</p>
-                                <p>like, price, market cap extr.....</p>
+                                <p>like, price, market cap etc.....</p>
                             </div>
                         </div>
 
                         {[1, 1, 1, 1].map((item, i) => (
-                            <div key={i} className={`${i % 2 == 0 ? "self-start" : "self-end"} "pb-5 w-auto"`}>
+                            <div key={i} className={`${i % 2 == 0 ? "self-start" : "self-end"} pb-5 w-auto`}>
 
                                 {i % 2 == 0 ? <div className="justify-end self-end px-5 py-2 rounded-md bg-slate-700 w-auto">
                                     <p>Prompt who are you</p>
@@ -93,11 +112,14 @@ const Home = () => {
                         ))}
 
                     </div>
-                </div>
+                    <div className='h-[12%] border-t'>
+                        <Input className="w-full h-full order-none outline-none" placeholder="write prompt" onChange={handleChange} value={inputValue} onKeyPress={handleKeypress}></Input>
+                    </div>
+                </div>}
 
                 <div className='relative w-[10rem] cursor-pointer group'>
-                    <Button className="w-full h-[2rem] gap-2 items-center">
-                        <MessageCircle size={30} className='fill-[#1e293b] -rotate-90 stroke-none group-hover:file-[#1a1a1a]'></MessageCircle>
+                    <Button onClick={handleBotRelease} className="w-full h-[2rem] gap-2 items-center">
+                        <MessageCircle size={30} className='fill-[#1e293b] -rotate-90 stroke-none group-hover:fill-[#1a1a1a]'></MessageCircle>
                         <span className='text-1xl'>Chat Bot</span>
                     </Button>
                 </div>
