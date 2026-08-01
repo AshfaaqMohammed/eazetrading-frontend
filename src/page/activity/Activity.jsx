@@ -1,7 +1,6 @@
 import React from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { BookmarkFilledIcon } from '@radix-ui/react-icons'
 
 const Activity = () => {
   return (
