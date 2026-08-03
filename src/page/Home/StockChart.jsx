@@ -68,17 +68,22 @@ const StockChart = () => {
     const options = {
         chart: {
             id:"area-datetime",
-            height:450,
+            height:300,
             zoom:{
                 autoScaleYaxis:true
             }
         },
-        dataLables: {
+        dataLabels: {
             enabled: false
         },
         xaxis: {
             type: "datetime",
             tickAmount: 6
+        },
+        yaxis: {
+            labels: {
+                formatter: (value) => value.toFixed(0)
+            }
         },
         colors: ["#758AA2"],
         markers: {
@@ -121,10 +126,7 @@ const StockChart = () => {
             )}
         </div>
         <div id="chart-timelines">
-            <ReactApexChart options={options} series={series}>
-
-            </ReactApexChart>
-
+            <ReactApexChart options={options} series={series} type="area" height={300} />
         </div>
     </div>
   )
