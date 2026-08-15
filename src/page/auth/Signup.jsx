@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useDispatch } from 'react-redux'
+import { register } from '@/State/Auth/Action'
 
 const Signup = () => {
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -15,6 +18,7 @@ const Signup = () => {
   }
 
   const handleSubmit = () => {
+    dispatch(register(formData))
     console.log(formData)
   }
 

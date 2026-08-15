@@ -1,39 +1,46 @@
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-const AssetTable = () => {
+const AssetTable = ({coin,category}) => {
+    const dispatch=useDispatch()
     const navigate=useNavigate()
+
+    
   return (
     <Table>
-        <TableHeader>
-            <TableRow>
-                <TableHead className="w-[100px]">Coin</TableHead>
-                <TableHead>Symbol</TableHead>
-                <TableHead>Volume</TableHead>
-                <TableHead>Market Cap</TableHead>
-                <TableHead>24h</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-            </TableRow>
-        </TableHeader>
-        <TableBody>
-            {[1,1,1,1,1,1,1,1,1].map((item, index) => 
-            <TableRow key={index}>
-                <TableCell onClick={()=>navigate("/market/bitcoin")} className="font-medium flex items-center gap-2 cursor-pointer">
-                    <Avatar className="-z-50">
-                        <AvatarImage src="https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400"></AvatarImage>
-                    </Avatar>
-                    <span>Bitcoin</span>
-                </TableCell>
-                <TableCell>BTC</TableCell>
-                <TableCell>9746372</TableCell>
-                <TableCell>12334234675</TableCell>
-                <TableCell>-0.2009</TableCell>
-                <TableCell className="text-right">$69249</TableCell>
-            </TableRow>)}
-            
-        </TableBody>
+        <ScrollArea className={`${category=="all"?"h-[68vh]":"h-[82vh]"}`}>
+            <TableHeader>
+                <TableRow>
+                    <TableHead className="w-[100px]">Coin</TableHead>
+                    <TableHead>Symbol</TableHead>
+                    <TableHead>Volume</TableHead>
+                    <TableHead>Market Cap</TableHead>
+                    <TableHead>24h</TableHead>
+                    <TableHead className="text-right">Price</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {coin.map((item) => 
+                <TableRow key={item.id}>
+                    <TableCell onClick={()=>navigate(`/market/${item.id}`)} className="font-medium flex items-center gap-2 cursor-pointer">
+                        <Avatar className="-z-50">
+                            <AvatarImage src={item.image}></AvatarImage>
+                        </Avatar>
+                        <span>{item.name}</span>
+                    </TableCell>
+                    <TableCell>{item.symbol}</TableCell>
+                    <TableCell>{item.total_volume}</TableCell>
+                    <TableCell>{item.market_cap}</TableCell>
+                    <TableCell>{item.price_change_24h}</TableCell>
+                    <TableCell className="text-right">${item.current_price}</TableCell>
+                </TableRow>)}
+                
+            </TableBody>
+        </ScrollArea>
     </Table>
   )
 }

@@ -2,8 +2,13 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useDispatch } from 'react-redux'
+import { login } from '@/State/Auth/Action'
+import { useNavigate } from 'react-router-dom'
 
 const Signin = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -14,6 +19,7 @@ const Signin = () => {
   }
 
   const handleSubmit = () => {
+    dispatch(login({formData,navigate}))
     console.log(formData)
   }
 

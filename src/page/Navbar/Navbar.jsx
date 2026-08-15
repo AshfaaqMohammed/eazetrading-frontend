@@ -5,8 +5,10 @@ import { DragHandleHorizontalIcon, MagnifyingGlassIcon } from '@radix-ui/react-i
 import React from 'react'
 import Sidebar from './Sidebar'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const Navbar = () => {
+    const {auth} = useSelector(store=>store)
     const navigate = useNavigate()
   return (
     <div className='px-2 py-3 border-b z-50 bg-background bg-background/0 sticky top-0 left-0 right-0 flex justify-between items-center'>
@@ -48,7 +50,7 @@ const Navbar = () => {
         <div>
             <Avatar>
                 <AvatarFallback>
-                    E
+                    {auth.user?.fullName[0].toUpperCase()}
                 </AvatarFallback>
             </Avatar>
         </div>

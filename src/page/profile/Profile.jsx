@@ -5,14 +5,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { VerifiedIcon } from 'lucide-react'
 import React from 'react'
 import AccountVarificationForm from './AccountVarificationForm'
+import { useSelector } from 'react-redux'
 
 const Profile = () => {
+  const {auth} = useSelector(store=>store)
   const handleEnableTwoStepVerification=() => {
     console.log("2 step verification")
   }
   return (
     <div className='flex flex-col items-center mb-5'>
-      <div className='pt-10 w-full lg:w-[60&]'>
+      <div className='pt-10 w-full lg:w-[60%]'>
         <Card>
           <CardHeader className="pb-9">
             <CardTitle>Your Information</CardTitle>
@@ -24,14 +26,14 @@ const Profile = () => {
                 <div className='flex'>
 
                   <p className='w-[9rem]'>Email :</p>
-                  <p className='text-gray-500'>eazetrading@gmail.com</p>
+                  <p className='text-gray-500'>{auth.user?.email}</p>
 
                 </div>
 
                 <div className='flex'>
 
                   <p className='w-[9rem]'>Full Name :</p>
-                  <p className='text-gray-500'>Eaze Trading</p>
+                  <p className='text-gray-500'>{auth.user?.fullName}</p>
                   
                 </div>
 

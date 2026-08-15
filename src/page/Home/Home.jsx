@@ -1,17 +1,40 @@
 import { Button } from '@/components/ui/button'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import AssetTable from './AssetTable';
 import StockChart from './StockChart';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Cross1Icon, DotIcon } from '@radix-ui/react-icons';
 import { MessageCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { getCoinList, getTop50CoinList } from '@/State/Coin/Action';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 const Home = () => {
+
+    const dispatch = useDispatch()
+    const {coin} = useSelector(store=>store)
 
     const [category, setCategory] = useState("all");
     const [inputValue, setInputValue] = useState("");
     const [isBotRelease, setBotRelease] = useState(false);
+    const [page, setPage] = useState(1);
+
+    useEffect(() => {
+        dispatch(getCoinList(page))
+    },[page])
+
+    useEffect(() => {
+        dispatch(getTop50CoinList())
+    },[category])
 
     const handleCategory = (value) => {
         setCategory(value);
@@ -46,14 +69,47 @@ const Home = () => {
                         <Button onClick={() => handleCategory("topLoosers")} variant={category == "topLoosers" ? "default" : "outline"} className='rounded-full'>Top Lossers</Button>
 
                     </div>
-                    <AssetTable>
+                    <AssetTable coin={category=="all"?coin.coinList:coin.top50} category={category}>
 
                     </AssetTable>
+
+                    <div className='py-4'>
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious 
+                                        onClick={(e) => { e.preventDefault(); if(page > 1) setPage(page - 1) }}
+                                        className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                                    />
+                                </PaginationItem>
+                                {[1, 2, 3, 4, 5].map((p) => (
+                                    <PaginationItem key={p}>
+                                        <PaginationLink 
+                                            isActive={page === p}
+                                            onClick={(e) => { e.preventDefault(); setPage(p) }}
+                                            className="cursor-pointer"
+                                        >
+                                            {p}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                ))}
+                                <PaginationItem>
+                                    <PaginationEllipsis />
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationNext 
+                                        onClick={(e) => { e.preventDefault(); setPage(page + 1) }}
+                                        className="cursor-pointer"
+                                    />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    </div>
 
                 </div>
 
                 <div className='hidden lg:block lg:w-[50%] p-5'>
-                    <StockChart></StockChart>
+                    <StockChart coinId={"bitcoin"}></StockChart>
 
                     <div className='flex gap-5 items-center'>
                         <div>
