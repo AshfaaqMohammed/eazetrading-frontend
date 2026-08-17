@@ -2,13 +2,47 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { ReloadIcon, UpdateIcon } from '@radix-ui/react-icons'
 import { CopyIcon, DollarSign, DownloadIcon, ShuffleIcon, UploadIcon, WalletIcon } from 'lucide-react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import TopupForm from './TopupForm'
 import WithdrawalForm from './WithdrawalForm'
 import TransferForm from './TransferForm'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { useDispatch, useSelector } from 'react-redux'
+import { depositeMoney, getUserWallet, getWalletTransactions } from '@/State/Wallet/Action'
+import { useLocation, useNavigate } from 'react-router-dom'
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search)
+}
 
 const Wallet = () => {
+  const dispatch = useDispatch();
+  const {wallet} = useSelector(store=>store)
+  const query=useQuery()
+  const orderId = query.get("order_id");
+  const stripePaymentId = query.get("payment_id")
+  const razorpayPaymentId = query.get("razorpay_payment_id")
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    handleGetUserWallet();
+    handleGetWalletTransaction();
+  },[])
+
+  useEffect(() => {
+    if(orderId) {
+      dispatch(depositeMoney(localStorage.getItem("jwt"),orderId,razorpayPaymentId || stripePaymentId,navigate))
+    }
+
+  },[orderId,stripePaymentId,razorpayPaymentId])
+
+  const handleGetUserWallet = () => {
+    dispatch(getUserWallet(localStorage.getItem("jwt")))
+  }
+
+  const handleGetWalletTransaction = () => {
+    dispatch(getWalletTransactions(localStorage.getItem("jwt")))
+  }
   return (
     <div className='flex flex-col items-center'>
       <div className='pt-10 w-full lg:w-[60%]'>
@@ -19,9 +53,9 @@ const Wallet = () => {
 
                 <WalletIcon size={30}></WalletIcon>
                 <div>
-                  <CardTitle className="text-2xl">My Wallet</CardTitle>
+                  <CardTitle className="text-2xl">{wallet.userWallet?.user?.fullName} Wallet</CardTitle>
                   <div className='flex items-center gap-2'>
-                    <p className='text-gray-200 text-sm'>#34R43A</p>
+                    <p className='text-gray-200 text-sm'>#{wallet.userWallet?.id}</p>
                     <CopyIcon size={10} className='cursor-pointer hover:text-slate-300'></CopyIcon>
                   </div>
                 </div>
@@ -29,7 +63,7 @@ const Wallet = () => {
               </div>
 
                 <div>
-                  <ReloadIcon className='w-6 h-6 cursor-pointer hover:text-gray-400'></ReloadIcon>
+                  <ReloadIcon onClick={handleGetUserWallet} className='w-6 h-6 cursor-pointer hover:text-gray-400'></ReloadIcon>
                 </div>
 
             </div>
@@ -38,7 +72,7 @@ const Wallet = () => {
           <CardContent>
             <div className='flex items-center'>
               <DollarSign></DollarSign>
-              <span className='text-2xl font-semibold'>20000</span>
+              <span className='text-2xl font-semibold'>{wallet.userWallet.balance}</span>
 
             </div>
 
@@ -107,25 +141,25 @@ const Wallet = () => {
 
           <div className='space-y-5'>
 
-            {[1,1,1,1,1,1,1,1,1].map((item,i) => 
+            {wallet.transactions.map((item,i) => 
               <div key={i}>
                 <Card className="px-5 p-2">
                   <div className='flex justify-between items-center'>
                     <div className='flex items-center gap-5'>
-                      <Avatar>
+                      <Avatar onClick={handleGetWalletTransaction}>
                         <AvatarFallback>
                           <ShuffleIcon></ShuffleIcon>
                         </AvatarFallback>
                       </Avatar>
                 
                       <div className='space-y-1'>
-                        <h1>Buy Asset</h1>
-                        <p className='text-sm text-gray-500'>01-08-26</p>
+                        <h1>{item.type || item.purpose}</h1>
+                        <p className='text-sm text-gray-500'>{item.date}</p>
                       </div>
                     </div>
                 
                     <div>
-                      <p className={`text-green-500`}>999 USD</p>
+                      <p className={`text-green-500`}>{item.amount}$</p>
                     </div>
                   </div>
                 </Card>
