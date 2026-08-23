@@ -8,15 +8,18 @@ import StockChart from '../Home/StockChart'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCoinDetails } from '@/State/Coin/Action'
 import { useParams } from 'react-router-dom'
+import { getUserWallet } from '@/State/Wallet/Action'
 
 const StockDetails = () => {
-  const dispatch=useDispatch()
-  const {id}=useParams()
-  const {coin} = useSelector(store=>store)
+  const dispatch = useDispatch()
+  const { id } = useParams()
+  const { coin, wallet } = useSelector(store => store)
 
   useEffect(() => {
     dispatch(getCoinDetails(id))
-  },[id])
+    dispatch(getUserWallet(localStorage.getItem("jwt")))
+  }, [id])
+
   return (
     <div className='p-5 mt-5'>
       <div className='flex justify-between'>
@@ -34,9 +37,9 @@ const StockDetails = () => {
             </div>
             <div className='flex items-end gap-2'>
               <p className='text-xl font-bold'>${coin.coinDetails?.market_data.current_price.usd}</p>
-              <p className='text-red-600'>
+              <p className={coin.coinDetails?.market_data.market_cap_change_percentage_24h < 0 ? 'text-red-600' : 'text-green-600'}>
                 <span>{coin.coinDetails?.market_data.market_cap_change_24h}</span>
-                <span>({coin.coinDetails?.market_data.market_cap_change_percentage_24h}%)</span>
+                <span> ({coin.coinDetails?.market_data.market_cap_change_percentage_24h}%)</span>
               </p>
             </div>
           </div>
@@ -55,9 +58,9 @@ const StockDetails = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>How much to spend?</DialogTitle>
+                <DialogTitle>How much do you want to spend?</DialogTitle>
               </DialogHeader>
-              <TradingForm/>
+              <TradingForm />
             </DialogContent>
           </Dialog>
         </div>
@@ -66,8 +69,6 @@ const StockDetails = () => {
       <div className='mt-14'>
         <StockChart coinId={id}></StockChart>
       </div>
-
-      
     </div>
   )
 }
