@@ -1,9 +1,14 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { addPaymentDetails } from '@/State/Withdrawal/Action'
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 const PaymentDetailsForm = ({ onClose }) => {
+
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     accountHolderName: '',
     ifsc: '',
@@ -21,7 +26,9 @@ const PaymentDetailsForm = ({ onClose }) => {
       alert('Account numbers do not match')
       return
     }
-    console.log(formData)
+    const { confirmAccountNumber, ...paymentData } = formData
+    dispatch(addPaymentDetails(localStorage.getItem("jwt"), paymentData))
+    console.log(paymentData)
     onClose()
   }
 
