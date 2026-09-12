@@ -32,9 +32,10 @@ const StockChart = ({coinId}) => {
 
     const [activeLable,setActiveLable] = useState(timeSeries[0]);
 
+    const chartData = coin.marketChart?.data || []
     const series = [
         {
-            data:coin.marketChart.data,
+            data:chartData,
         },
     ]
 
@@ -103,7 +104,19 @@ const StockChart = ({coinId}) => {
             )}
         </div>
         <div id="chart-timelines">
-            <ReactApexChart options={options} series={series} type="area" height={300} />
+            {chartData.length > 0 ? (
+          <ReactApexChart
+              key={`${coinId}-${activeLable.value}`}
+              options={options}
+              series={series}
+              type="area"
+              height={300}
+          />
+            ) : (
+            <div className="h-[300px] flex items-center justify-center text-gray-500">
+                Loading chart...
+            </div>
+            )}
         </div>
     </div>
   )

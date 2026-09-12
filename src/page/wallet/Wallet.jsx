@@ -136,7 +136,7 @@ const Wallet = () => {
         <div className='py-5 pt-10'>
           <div className='flex gap-2 items-center pb-5'>
             <h1 className='text-2xl font-semibold'>History</h1>
-            <UpdateIcon className='h-7 w-7 p-0 cursor-pointer hover:text-gray-400'></UpdateIcon>
+            <UpdateIcon onClick={handleGetWalletTransaction} className='h-7 w-7 p-0 cursor-pointer hover:text-gray-400'></UpdateIcon>
           </div>
 
           <div className='space-y-5'>
@@ -146,7 +146,7 @@ const Wallet = () => {
                 <Card className="px-5 p-2">
                   <div className='flex justify-between items-center'>
                     <div className='flex items-center gap-5'>
-                      <Avatar onClick={handleGetWalletTransaction}>
+                      <Avatar>
                         <AvatarFallback>
                           <ShuffleIcon></ShuffleIcon>
                         </AvatarFallback>

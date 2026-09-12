@@ -1,13 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { BookmarkFilledIcon } from '@radix-ui/react-icons'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUserWatchlist, addCoinToWatchlist } from '@/State/WatchList/Action'
+import { useNavigate } from 'react-router-dom'
 
 const Watchlist = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { watchlist } = useSelector(store => store)
 
-  const handleRemoveFromWatchlist = (value) => {
-    console.log(value);
+  useEffect(() => {
+    dispatch(getUserWatchlist(localStorage.getItem("jwt")))
+  }, [])
+
+  const handleRemoveFromWatchlist = (coinId) => {
+    dispatch(addCoinToWatchlist(localStorage.getItem("jwt"), coinId))
   }
 
   return (
@@ -26,28 +36,32 @@ const Watchlist = () => {
             </TableRow>
         </TableHeader>
         <TableBody>
-            {[1,1,1,1,1,1,1,1,1].map((item, index) => 
-            <TableRow key={index}>
-                <TableCell className="font-medium flex items-center gap-2">
+            {watchlist.watchlist?.coins?.map((item) => 
+            <TableRow key={item.id}>
+                <TableCell
+                  className="font-medium flex items-center gap-2 cursor-pointer"
+                  onClick={() => navigate(`/market/${item.id}`)}
+                >
                     <Avatar className="-z-50">
-                        <AvatarImage src="https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400"></AvatarImage>
+                        <AvatarImage src={item.image}></AvatarImage>
                     </Avatar>
-                    <span>Bitcoin</span>
+                    <span>{item.name}</span>
                 </TableCell>
-                <TableCell>BTC</TableCell>
-                <TableCell>9746372</TableCell>
-                <TableCell>12334234675</TableCell>
-                <TableCell>-0.2009</TableCell>
-                <TableCell className="">$69249</TableCell>
+                <TableCell>{item.symbol}</TableCell>
+                <TableCell>{item.total_volume}</TableCell>
+                <TableCell>{item.market_cap}</TableCell>
+                <TableCell className={item.price_change_percentage_24h < 0 ? 'text-red-600' : 'text-green-600'}>
+                  {item.price_change_percentage_24h?.toFixed(2)}%
+                </TableCell>
+                <TableCell>${item.current_price}</TableCell>
                 <TableCell className="text-right">
-                  <Button onClick={() => handleRemoveFromWatchlist(item)} variant='outline' size='icon' className="h-10 w-10">
+                  <Button onClick={() => handleRemoveFromWatchlist(item.id)} variant='outline' size='icon' className="h-10 w-10">
                     <BookmarkFilledIcon className='w-6 h-6'/>
                   </Button>
                 </TableCell>
             </TableRow>)}
-            
         </TableBody>
-    </Table>
+      </Table>
     </div>
   )
 }

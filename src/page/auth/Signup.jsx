@@ -4,9 +4,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useDispatch } from 'react-redux'
 import { register } from '@/State/Auth/Action'
+import { useNavigate } from 'react-router-dom'
 
 const Signup = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -18,7 +20,7 @@ const Signup = () => {
   }
 
   const handleSubmit = () => {
-    dispatch(register(formData))
+    dispatch(register(formData, navigate))
     console.log(formData)
   }
 

@@ -61,6 +61,10 @@ export const depositeMoney = (jwt, orderId, paymentId,navigate) => async (dispat
         });
         console.log("deposit money - ", data);
         dispatch({ type: DEPOSITE_MONEY_SUCCESS, payload: data });
+        // Refresh wallet balance and transaction history so the UI reflects
+        // the new state without requiring a manual page refresh.
+        dispatch(getUserWallet(jwt));
+        dispatch(getWalletTransactions(jwt));
         navigate("/wallet")
     } catch (error) {
         dispatch({ type: DEPOSITE_MONEY_FAILURE, payload: error.message });
@@ -78,6 +82,10 @@ export const transferMoney = (jwt, walletId, reqData) => async (dispatch) => {
         });
         console.log("transfer money - ", data);
         dispatch({ type: TRANSFER_MONEY_SUCCESS, payload: data });
+        // Refresh wallet balance and transaction history so the UI reflects
+        // the new state without requiring a manual page refresh.
+        dispatch(getUserWallet(jwt));
+        dispatch(getWalletTransactions(jwt));
     } catch (error) {
         dispatch({ type: TRANSFER_MONEY_FAILURE, payload: error.message });
         console.log(error);

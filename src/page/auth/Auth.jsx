@@ -1,14 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "./Auth.css"
 import Signup from './Signup'
 import { Button } from '@/components/ui/button'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ForgotPass from './ForgotPass'
 import Signin from './Signin'
+import { useDispatch, useSelector } from 'react-redux'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
+import { verifyLoginOtp } from '@/State/Auth/Action'
 
 const Auth = () => {
     const navigate = useNavigate()
     const location = useLocation()
+    const dispatch = useDispatch()
+    const { auth } = useSelector(store => store)
+    const [otp, setOtp] = useState("")
+
+    const handleTwoFactorSubmit = () => {
+        dispatch(verifyLoginOtp(otp, auth.twoStepSessionId, navigate))
+        setOtp("")
+    }
+
   return (
     <div className='h-screen relative authContainer'>
         <div className='absolute top-0 right-0 left-0 bottom-0 bg-[#030712]/50'>
@@ -16,8 +28,31 @@ const Auth = () => {
             bg-black/50 shadow-2xl shadow-white py-10'>
                 <h1 className='text-6xl font-bold pb-9'>Eaze Trading</h1>
 
-
-                {location.pathname == "/signup" ? 
+                {auth.twoFactorAuthEnabled ? (
+                    <section className='px-10 w-full'>
+                        <h1 className='text-xl font-bold text-center pb-5'>Two Factor Authentication</h1>
+                        <p className='text-center text-gray-400 pb-5'>Enter the OTP sent to your email</p>
+                        <div className='flex justify-center pb-5'>
+                            <InputOTP value={otp} onChange={(value) => setOtp(value)} maxLength={6}>
+                                <InputOTPGroup>
+                                    <InputOTPSlot index={0} />
+                                    <InputOTPSlot index={1} />
+                                    <InputOTPSlot index={2} />
+                                    <InputOTPSlot index={3} />
+                                    <InputOTPSlot index={4} />
+                                    <InputOTPSlot index={5} />
+                                </InputOTPGroup>
+                            </InputOTP>
+                        </div>
+                        <Button
+                            onClick={handleTwoFactorSubmit}
+                            disabled={otp.length < 6 || auth.loading}
+                            className='w-full py-5'
+                        >
+                            Verify OTP
+                        </Button>
+                    </section>
+                ) : location.pathname == "/signup" ? 
                     <section>
                         <Signup></Signup>
                         <div className='flex items-center justify-center'>

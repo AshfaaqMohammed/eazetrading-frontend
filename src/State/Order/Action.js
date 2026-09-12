@@ -43,16 +43,12 @@ export const getOrderById = (jwt, orderId) => async (dispatch) => {
     }
 }
 
-export const getAllOrdersForUser = (jwt, orderType, assetSymbol) => async (dispatch) => {
+export const getAllOrdersForUser = (jwt) => async (dispatch) => {
     dispatch({ type: GET_ALL_ORDER_REQUEST });
     try {
         const { data } = await api.get(`/api/orders`, {
             headers: {
                 Authorization: `Bearer ${jwt}`
-            },
-            params: {
-                orderType,
-                assetSymbol
             }
         });
         console.log("get all orders - ", data);

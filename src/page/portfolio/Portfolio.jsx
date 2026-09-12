@@ -3,9 +3,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAssetsForUser } from '@/State/Asset/Action'
+import { useNavigate } from 'react-router-dom'
 
 const Portfolio = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { asset } = useSelector(store => store)
 
   useEffect(() => {
@@ -36,7 +38,7 @@ const Portfolio = () => {
 
             return (
             <TableRow key={item.id}>
-                <TableCell className="font-medium flex items-center gap-2">
+                <TableCell className="font-medium flex items-center gap-2 cursor-pointer" onClick={() => navigate(`/market/${item.coin.id}`)}>
                     <Avatar className="-z-50">
                         <AvatarImage src={item.coin?.image}></AvatarImage>
                     </Avatar>
