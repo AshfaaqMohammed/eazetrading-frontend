@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import AssetTable from './AssetTable';
 import StockChart from './StockChart';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
@@ -40,6 +40,31 @@ const Home = () => {
         setCategory(value);
     }
 
+    // Decide which list (and ordering) to show based on the active category.
+    // "all" uses the paginated coinList; the others all derive from top50,
+    // with Gainers/Lossers sorted by 24h % change so they actually differ
+    // (previously every top50-based tab showed the same unsorted list).
+    const displayedCoins = useMemo(() => {
+        if (category === "all") return coin.coinList
+
+        const list = [...(coin.top50 || [])]
+        if (category === "topGainers") {
+            return list.sort(
+                (a, b) =>
+                    (b.price_change_percentage_24h ?? -Infinity) -
+                    (a.price_change_percentage_24h ?? -Infinity)
+            )
+        }
+        if (category === "topLoosers") {
+            return list.sort(
+                (a, b) =>
+                    (a.price_change_percentage_24h ?? Infinity) -
+                    (b.price_change_percentage_24h ?? Infinity)
+            )
+        }
+        return list // "top50" -> keep API order (market cap)
+    }, [category, coin.coinList, coin.top50])
+
     const handleChange = (e) => {
         setInputValue(e.target.value);
     }
@@ -69,7 +94,7 @@ const Home = () => {
                         <Button onClick={() => handleCategory("topLoosers")} variant={category == "topLoosers" ? "default" : "outline"} className='rounded-full'>Top Lossers</Button>
 
                     </div>
-                    <AssetTable coin={category=="all"?coin.coinList:coin.top50} category={category}>
+                    <AssetTable coin={displayedCoins} category={category}>
 
                     </AssetTable>
 

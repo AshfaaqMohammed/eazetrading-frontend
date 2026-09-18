@@ -23,8 +23,8 @@ const Auth = () => {
 
   return (
     <div className='h-screen relative authContainer'>
-        <div className='absolute top-0 right-0 left-0 bottom-0 bg-[#030712]/50'>
-            <div className='bgBlur absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center w-[30rem] rounded-md z-50
+        <div className='absolute top-0 right-0 left-0 bottom-0 bg-[#030712]/50 flex items-center justify-center'>
+            <div className='bgBlur relative flex flex-col items-center w-[30rem] max-w-[90vw] rounded-md z-50
             bg-black/50 shadow-2xl shadow-white py-10'>
                 <h1 className='text-6xl font-bold pb-9'>Eaze Trading</h1>
 

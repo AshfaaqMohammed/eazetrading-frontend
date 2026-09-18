@@ -1,0 +1,87 @@
+/* --- Top gainers arcade ticker --- */
+
+.ticker-viewport {
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+/* Fade edges so items appear to emerge/vanish rather than pop */
+.ticker-viewport::before,
+.ticker-viewport::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  z-index: 2;
+  pointer-events: none;
+}
+.ticker-viewport::before {
+  left: 0;
+  background: linear-gradient(to right, #0b0f17, transparent);
+}
+.ticker-viewport::after {
+  right: 0;
+  background: linear-gradient(to left, #0b0f17, transparent);
+}
+
+/* The track holds TWO copies of the list back-to-back. Translating by -50%
+   lands the second copy exactly where the first started -> seamless loop. */
+.ticker-track {
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  animation: tickerScroll 45s linear infinite;
+}
+
+.ticker-viewport:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes tickerScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1.5rem;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.ticker-item:hover {
+  filter: brightness(1.35);
+}
+
+.ticker-rank {
+  color: #f59e0b; /* amber, matches the brand orange */
+  text-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+}
+
+.ticker-up {
+  color: #22c55e;
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+.ticker-down {
+  color: #ef4444;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+/* Respect users who prefer no motion */
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+}

@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import './App.css'
 import Home from './page/Home/Home'
 import Navbar from './page/Navbar/Navbar'
+import GainersTicker from './page/Navbar/GainersTicker'
 import Portfolio from './page/portfolio/Portfolio'
 import Activity from './page/activity/Activity'
 import Wallet from './page/wallet/Wallet'
@@ -37,6 +38,7 @@ function App() {
         ? 
           <div>
             <Navbar></Navbar>
+            <GainersTicker></GainersTicker>
             <Routes>
               <Route path='/' element={<Home/>}></Route>
               <Route path='/portfolio' element={<Portfolio/>}></Route>

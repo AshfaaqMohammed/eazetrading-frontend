@@ -19,7 +19,17 @@ export const register = (userData, navigate) => async (dispatch) => {
         localStorage.setItem("jwt", user.jwt);
         navigate("/")
     } catch (error) {
-        dispatch({ type: REGISTER_FAILURE, payload: error.message })
+        // Surface the backend's real message (e.g. "Email is already used with
+        // another account.") instead of axios's generic "Request failed..." string.
+        const message =
+            error.response?.data?.message ||
+            error.response?.data?.error ||
+            (typeof error.response?.data === "string" ? error.response.data : null) ||
+            error.message;
+        dispatch({
+            type: REGISTER_FAILURE,
+            payload: { message, status: error.response?.status }
+        })
         console.log(error);
     }
 }
